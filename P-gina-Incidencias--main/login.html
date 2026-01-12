@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Inicio de Sesión | INSITRA</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* PALETA DE COLORES DEL DASHBOARD */
+        :root {
+            --primary-blue: #1a2980;
+            --secondary-blue: #26d0ce;
+            --accent-color: #AB096A; /* Color Vino/Magenta */
+            --accent-hover: #8A0755;
+        }
+
+        * { 
+            box-sizing: border-box; 
+            font-family: "Arial", sans-serif; 
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            height: 100vh;
+            /* Fondo degradado igual al Dashboard */
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-blue) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .login-card {
+            background: white;
+            width: 400px;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+            text-align: center;
+            /* Borde superior con el color de acento */
+            border-top: 5px solid var(--accent-color);
+        }
+
+        .logo-container {
+            margin-bottom: 25px;
+        }
+
+        .logo-container img {
+            max-width: 180px;
+            height: auto;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .form-group label {
+            font-weight: 600;
+            color: #555;
+            margin-bottom: 8px;
+            display: block;
+            font-size: 0.9rem;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border-radius: 6px;
+            border: 1px solid #ddd;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--accent-color);
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 14px;
+            /* Botón con el color de acento del sistema */
+            background-color: var(--accent-color);
+            border: none;
+            border-radius: 6px;
+            color: white;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: background-color 0.3s;
+        }
+
+        .btn-login:hover {
+            background-color: var(--accent-hover);
+        }
+
+        .footer-text {
+            margin-top: 25px;
+            font-size: 0.85rem;
+            color: #95a5a6;
+        }
+
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="login-card">
+        <div class="logo-container">
+            <img src="logo sin fondo.png" alt="INSITRA" onerror="this.style.display='none'; document.getElementById('alt-logo').style.display='block'">
+            <div id="alt-logo" style="display:none; font-size: 2rem; color: #1a2980; font-weight: bold;">
+                <i class="fas fa-cube"></i> INSITRA
+            </div>
+        </div>
+
+        <div class="error" id="error-msg">
+            Credenciales incorrectas
+        </div>
+
+        <form id="login-form">
+            <div class="form-group">
+                <label>Correo electrónico</label>
+                <input type="email" id="email" placeholder="admin@incidencias.com" required>
+            </div>
+
+            <div class="form-group">
+                <label>Contraseña</label>
+                <input type="password" id="password" placeholder="********" required>
+            </div>
+
+            <button type="submit" class="btn-login">
+                <i class="fas fa-sign-in-alt"></i> Ingresar
+            </button>
+        </form>
+
+        <div class="footer-text">
+            © 2025 Panel de Incidencias
+        </div>
+    </div>
+
+    <script>
+        document.getElementById("login-form").addEventListener("submit", function(e) {
+            e.preventDefault();
+
+            const email = document.getElementById("email").value;
+            const password = document.getElementById("password").value;
+            let usuario = null;
+
+            // 1. ADMINISTRADOR (Acceso Total)
+            if (email === "admin@incidencias.com" && password === "admin123") {
+                usuario = {
+                    nombre: "Administrador General",
+                    email: email,
+                    rol: "administrador",
+                    inicio: new Date().toISOString()
+                };
+            }
+            // 2. SUPERVISOR (Solo Lectura)
+            else if (email === "supervisor@incidencias.com" && password === "super123") {
+                usuario = {
+                    nombre: "Supervisor de Área",
+                    email: email,
+                    rol: "supervisor",
+                    inicio: new Date().toISOString()
+                };
+            }
+
+            if (usuario) {
+                localStorage.setItem('sesion', JSON.stringify(usuario));
+                // Redirige específicamente a index2.html como pediste
+                window.location.href = "index2.html";
+            } else {
+                const error = document.getElementById("error-msg");
+                error.style.display = "block";
+            }
+        });
+    </script>
+</body>
+</html>

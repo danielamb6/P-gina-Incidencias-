@@ -9,25 +9,22 @@ const estadosTexto = ['Abierto', 'En Espera', 'Cerrado', 'Resuelto'];
 
 document.addEventListener('DOMContentLoaded', function() {
     // 1. OBTENER SESIÓN
+    // Nota: El archivo index.html ya tiene una protección en <head>, 
+    // pero aquí leemos los datos para mostrarlos.
     const sesion = localStorage.getItem('sesion');
     
-    // Si no hay sesión, se redirige al login
-    if (!sesion) {
-        window.location.href = "login.html";
-        return;
-    }
-
-    try {
-        const datosUsuario = JSON.parse(sesion);
-        if (document.getElementById('display-user-name')) {
-            document.getElementById('display-user-name').textContent = datosUsuario.nombre;
+    if (sesion) {
+        try {
+            const datosUsuario = JSON.parse(sesion);
+            if (document.getElementById('display-user-name')) {
+                document.getElementById('display-user-name').textContent = datosUsuario.nombre;
+            }
+            if (document.getElementById('display-user-role')) {
+                document.getElementById('display-user-role').textContent = datosUsuario.rol.toUpperCase();
+            }
+        } catch (e) {
+            console.error("Error al leer datos de sesión", e);
         }
-        if (document.getElementById('display-user-role')) {
-            const rolDisplay = datosUsuario.rol === 'supervisor' ? 'SUPERVISOR (Solo Lectura)' : datosUsuario.rol.toUpperCase();
-            document.getElementById('display-user-role').textContent = rolDisplay;
-        }
-    } catch (e) {
-        console.error("Error al leer datos de sesión", e);
     }
 
     // 2. LÓGICA DEL BOTÓN "SALIR"
@@ -37,13 +34,17 @@ document.addEventListener('DOMContentLoaded', function() {
         btnSalir.onmouseout = () => btnSalir.style.transform = "scale(1)";
 
         btnSalir.addEventListener('click', function() {
+            // Borrar TODAS las posibles credenciales para evitar bucles futuros
             localStorage.removeItem('sesion');
             localStorage.removeItem('sesion_activa'); 
             sessionStorage.clear();
+            
+            // Mandar al login
             window.location.href = "login.html"; 
         });
     }
 
+    // Inicializar el resto de la aplicación
     inicializarFechas();
     inicializarDatos();
     inicializarEventos();
@@ -81,6 +82,7 @@ function inicializarDatos() {
     }
 }
 
+// LOGICA DE NAVEGACION
 function inicializarNavegacion() {
     const links = document.querySelectorAll('.menu-link');
     const views = {
@@ -93,8 +95,6 @@ function inicializarNavegacion() {
 
     links.forEach(link => {
         link.addEventListener('click', (e) => {
-            if (link.getAttribute('href') !== '#') return;
-
             e.preventDefault();
             links.forEach(l => l.classList.remove('active'));
             link.classList.add('active');
@@ -112,78 +112,11 @@ function inicializarNavegacion() {
                 if(targetId === 'view-incidencias') renderAllIncidencias();
                 if(targetId === 'view-tecnicos') renderAllTecnicos();
                 if(targetId === 'view-empresas') renderAllEmpresas();
-                if(targetId === 'view-reportes') renderReportesHistory(); // <--- AQUÍ SE CARGA EL HISTORIAL
+                if(targetId === 'view-reportes') renderReportesHistory();
             }
         });
     });
 }
-
-// ==========================================
-// NUEVA LÓGICA DE HISTORIAL DE REPORTES
-// ==========================================
-
-function registrarReporteEnHistorial(filtros) {
-    // 1. Obtener historial actual
-    let historial = JSON.parse(localStorage.getItem('historial_reportes')) || [];
-    
-    // 2. Obtener datos del usuario actual
-    const sesion = JSON.parse(localStorage.getItem('sesion'));
-    const nombreUsuario = sesion ? sesion.nombre : 'Desconocido';
-
-    // 3. Definir periodo
-    let periodoTexto = "Todo el historial";
-    if (filtros.fechaInicio && filtros.fechaFin) {
-        periodoTexto = `${filtros.fechaInicio} al ${filtros.fechaFin}`;
-    } else if (filtros.fechaInicio) {
-        periodoTexto = `Desde ${filtros.fechaInicio}`;
-    }
-
-    // 4. Crear objeto de nuevo reporte
-    const nuevoReporte = {
-        id: Date.now(), // ID único basado en tiempo
-        nombre: `Reporte General ${new Date().toLocaleDateString('es-ES')}`,
-        fechaGeneracion: new Date().toLocaleString('es-ES'),
-        periodo: periodoTexto,
-        usuario: nombreUsuario,
-        estado: "Completado"
-    };
-
-    // 5. Guardar al principio del array (más reciente primero)
-    historial.unshift(nuevoReporte);
-    localStorage.setItem('historial_reportes', JSON.stringify(historial));
-}
-
-function renderReportesHistory() {
-    const tbody = document.getElementById('reportes-history-body');
-    if(!tbody) return;
-    
-    // 1. Leer de LocalStorage
-    const historial = JSON.parse(localStorage.getItem('historial_reportes')) || [];
-    
-    tbody.innerHTML = '';
-
-    if (historial.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:20px; color:#666;">No se han generado reportes aún.</td></tr>';
-        return;
-    }
-
-    // 2. Renderizar filas
-    historial.forEach(h => {
-        tbody.innerHTML += `
-            <tr>
-                <td><i class="fas fa-file-pdf" style="color:red; margin-right:8px;"></i> ${h.nombre}</td>
-                <td>${h.fechaGeneracion}</td>
-                <td>${h.periodo}</td>
-                <td>${h.usuario}</td>
-                <td><span class="status-badge status-resuelto">${h.estado}</span></td>
-            </tr>
-        `;
-    });
-}
-
-// ==========================================
-// FIN NUEVA LÓGICA
-// ==========================================
 
 function renderAllIncidencias() {
     const tbody = document.getElementById('all-tickets-body');
@@ -231,6 +164,28 @@ function renderAllEmpresas() {
                 <h3>${emp}</h3>
                 <p>${count} Reportes</p>
             </div>
+        `;
+    });
+}
+
+function renderReportesHistory() {
+    const tbody = document.getElementById('reportes-history-body');
+    if(!tbody) return;
+    const historial = [
+        { nombre: 'Reporte Mensual Diciembre', fecha: '30/12/2024', periodo: '01/12 - 30/12', user: 'Admin' },
+        { nombre: 'Reporte Cierre Zoxo', fecha: '15/01/2025', periodo: '01/01 - 15/01', user: 'Admin' },
+        { nombre: 'Incidencias Críticas', fecha: '28/01/2025', periodo: '20/01 - 28/01', user: 'Admin' }
+    ];
+    tbody.innerHTML = '';
+    historial.forEach(h => {
+        tbody.innerHTML += `
+            <tr>
+                <td><i class="fas fa-file-pdf" style="color:red"></i> ${h.nombre}</td>
+                <td>${h.fecha}</td>
+                <td>${h.periodo}</td>
+                <td>${h.user}</td>
+                <td><span class="status-badge status-resuelto">Completado</span></td>
+            </tr>
         `;
     });
 }
@@ -312,6 +267,7 @@ function actualizarVista() {
 }
 
 function obtenerFiltros() {
+    // Verificamos que existan los elementos antes de leer su valor
     const emp = document.getElementById('empresa');
     if(!emp) return null;
 
@@ -353,13 +309,6 @@ function actualizarTabla(tickets) {
     const tbody = document.getElementById('tickets-body');
     if(!tbody) return;
     tbody.innerHTML = '';
-    
-    // --- VERIFICACIÓN DE ROL ---
-    const sesion = JSON.parse(localStorage.getItem('sesion'));
-    const esSupervisor = sesion && sesion.rol === 'supervisor';
-    const disabledAttr = esSupervisor ? 'disabled style="opacity: 0.6; cursor: not-allowed; background-color: #f0f0f0;"' : '';
-    // ---------------------------
-
     if (tickets.length === 0) {
         tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:20px;">Sin resultados</td></tr>';
         return;
@@ -374,7 +323,7 @@ function actualizarTabla(tickets) {
                 <td>${ticket.tipoFalla}</td>
                 <td><span class="status-badge status-${ticket.estado}">${ticket.estadoTexto}</span></td>
                 <td>
-                    <select class="status-select" data-ticket="${ticket.id}" ${disabledAttr}>
+                    <select class="status-select" data-ticket="${ticket.id}">
                         <option value="abierto" ${ticket.estado==='abierto'?'selected':''}>Abierto</option>
                         <option value="espera" ${ticket.estado==='espera'?'selected':''}>En Espera</option>
                         <option value="cerrado" ${ticket.estado==='cerrado'?'selected':''}>Cerrado</option>
@@ -384,14 +333,11 @@ function actualizarTabla(tickets) {
             </tr>
         `;
     });
-    
-    if(!esSupervisor) {
-        document.querySelectorAll('.status-select').forEach(s => {
-            s.addEventListener('change', function() {
-                cambiarEstadoTicket(parseInt(this.dataset.ticket), this.value);
-            });
+    document.querySelectorAll('.status-select').forEach(s => {
+        s.addEventListener('change', function() {
+            cambiarEstadoTicket(parseInt(this.dataset.ticket), this.value);
         });
-    }
+    });
 }
 
 function actualizarEstadisticas(tickets) {
@@ -571,13 +517,8 @@ function descargarPDFFinal() {
         yPos += 6;
     });
 
-    // Guardar el archivo PDF
     pdf.save(`reporte-${new Date().toISOString().split('T')[0]}.pdf`);
-    
-    // REGISTRAR EN HISTORIAL (NUEVO)
-    registrarReporteEnHistorial(filtros);
-    
-    showNotification('Reporte descargado y guardado en historial', 'success');
+    showNotification('Reporte descargado', 'success');
 }
 
 function showNotification(msg, type) {

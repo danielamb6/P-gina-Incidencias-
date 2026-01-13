@@ -4,14 +4,6 @@
     <meta charset="UTF-8">
     <title>Registro de Usuarios | Admin Incidencias</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <script>
-        const sesionActiva = localStorage.getItem('sesion');
-        if (!sesionActiva) {
-            window.location.href = "login.html";
-        }
-    </script>
-
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
@@ -45,7 +37,7 @@
             min-height: 100vh;
         }
 
-        /* BARRA SUPERIOR */
+        /* BARRA SUPERIOR CON EL MISMO DISEÑO */
         .top-bar {
             background: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-blue) 100%);
             color: var(--white);
@@ -201,7 +193,7 @@
             padding: 0 40px;
         }
 
-        /* Título de la página */
+        /* Título de la página con el mismo diseño */
         .page-title {
             color: var(--primary-blue);
             font-size: 1.8rem;
@@ -229,7 +221,7 @@
             gap: 10px;
         }
 
-        /* Botones */
+        /* Botones con el mismo diseño */
         .btn {
             padding: 12px 25px;
             border: none;
@@ -287,7 +279,7 @@
             background: linear-gradient(135deg, #c0392b 0%, #a93226 100%);
         }
 
-        /* Formulario */
+        /* Tarjeta de formulario con el mismo diseño */
         .form-card {
             background: linear-gradient(135deg, rgba(26, 41, 128, 0.05) 0%, rgba(38, 208, 206, 0.05) 100%);
             border-radius: 12px;
@@ -411,7 +403,7 @@
             border-top: 1px solid rgba(171, 9, 106, 0.2);
         }
 
-        /* Tabla de usuarios */
+        /* Tabla de usuarios con el mismo diseño */
         .table-container {
             background: var(--white);
             border-radius: 12px;
@@ -529,9 +521,7 @@
             background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
         }
 
-        .role-supervisor {
-            background: linear-gradient(135deg, #f39c12 0%, #d35400 100%);
-        }
+        
 
         .status-active {
             color: var(--success);
@@ -589,7 +579,7 @@
             background-color: rgba(26, 41, 128, 0.2);
         }
 
-        /* Modal */
+        /* Modal con el mismo diseño */
         .modal {
             display: none;
             position: fixed;
@@ -839,9 +829,11 @@
             .main-container {
                 padding: 0 20px;
             }
+            
             .form-grid {
                 grid-template-columns: 1fr;
             }
+            
             .nav-menu {
                 flex-wrap: wrap;
                 justify-content: center;
@@ -857,43 +849,53 @@
                 text-align: center;
                 min-height: auto;
             }
+
             .logo-container {
                 flex-direction: column;
                 text-align: center;
                 gap: 10px;
             }
+
             .top-user-info {
                 flex-direction: column;
                 gap: 10px;
                 text-align: center;
             }
+
             .user-details {
                 text-align: center;
             }
+
             .page-title {
                 flex-direction: column;
                 gap: 15px;
                 align-items: flex-start;
             }
+
             .form-actions {
                 flex-direction: column;
             }
+
             .btn {
                 width: 100%;
                 justify-content: center;
             }
+
             .search-box {
                 width: 100%;
             }
+
             table {
                 display: block;
                 overflow-x: auto;
             }
+
             .table-header {
                 flex-direction: column;
                 gap: 15px;
                 align-items: flex-start;
             }
+
             .action-buttons {
                 flex-wrap: wrap;
             }
@@ -903,9 +905,11 @@
             .top-bar {
                 padding: 10px 15px;
             }
+
             .main-container {
                 padding: 0 15px;
             }
+
             .form-card {
                 padding: 20px;
             }
@@ -940,7 +944,7 @@
         </div>
         
         <nav class="nav-menu">
-            <a href="index2.html" class="nav-link">
+            <a href="index.html" class="nav-link">
                 <i class="fas fa-chart-line"></i> Dashboard
             </a>
             <a href="registro_usuario.html" class="nav-link active">
@@ -951,8 +955,8 @@
         <div class="top-user-info">
             <div class="top-user-avatar" data-tooltip="Administrador">AD</div>
             <div class="user-details">
-                <div class="user-name" id="user-display-name">Usuario</div>
-                <div class="user-role" id="user-display-role">Rol</div>
+                <div class="user-name">Administrador</div>
+                <div class="user-role">Gestión de Usuarios</div>
             </div>
         </div>
     </div>
@@ -989,6 +993,8 @@
                         <input type="email" class="form-control" id="email" placeholder="usuario@empresa.com" required>
                     </div>
                     
+                    
+                    
                     <div class="form-group">
                         <label>Empresa</label>
                         <select class="select-control" id="empresa">
@@ -1007,7 +1013,7 @@
                             <option value="">Seleccionar rol</option>
                             <option value="administrador">Administrador</option>
                             <option value="tecnico">Técnico</option>
-                            <option value="supervisor">Supervisor</option>
+                            
                         </select>
                     </div>
                     
@@ -1029,7 +1035,6 @@
                         <input type="password" class="form-control" id="confirmPassword" placeholder="Repite la contraseña" required>
                     </div>
                 </div>
-                
                 
                 
                 <div class="form-actions">
@@ -1117,10 +1122,11 @@
 
     <script>
         // ==============================================
-        // SERVICIO DE USUARIOS
+        // SERVICIO DE USUARIOS - AISLADO PARA BD FUTURA
         // ==============================================
         class UsuarioService {
             constructor() {
+                // Por ahora usa localStorage, luego reemplazar con llamadas a API
                 this.usuarios = JSON.parse(localStorage.getItem('usuarios')) || this.getUsuariosDemo();
                 this.usuarioActual = null;
             }
@@ -1134,6 +1140,7 @@
                         email: "juan@empresa.com",
                         rol: "tecnico",
                         empresa: "Zoxo",
+                        
                         activo: true,
                         fechaRegistro: "2024-01-15"
                     },
@@ -1144,37 +1151,34 @@
                         email: "maria@empresa.com",
                         rol: "administrador",
                         empresa: "Codiversa",
+                        
                         activo: true,
                         fechaRegistro: "2024-01-10"
                     },
-                    {
-                        id: 3,
-                        nombre: "Carlos Supervisor",
-                        username: "csup",
-                        email: "carlos@empresa.com",
-                        rol: "supervisor",
-                        empresa: "Copesa",
-                        activo: true,
-                        fechaRegistro: "2024-02-01"
-                    }
                 ];
             }
 
+            // Métodos que luego se conectarán a la BD
             async obtenerUsuarios() {
+                // TODO: Reemplazar con fetch a API
                 return this.usuarios;
             }
 
             async guardarUsuario(usuario) {
                 if (usuario.id) {
+                    // Actualizar usuario existente
                     const index = this.usuarios.findIndex(u => u.id === usuario.id);
                     if (index !== -1) {
                         this.usuarios[index] = usuario;
                     }
                 } else {
+                    // Crear nuevo usuario
                     usuario.id = this.obtenerNuevoId();
                     usuario.fechaRegistro = new Date().toISOString().split('T')[0];
                     this.usuarios.push(usuario);
                 }
+                
+                // TODO: Reemplazar con fetch a API
                 localStorage.setItem('usuarios', JSON.stringify(this.usuarios));
                 return usuario;
             }
@@ -1183,6 +1187,7 @@
                 const usuario = this.usuarios.find(u => u.id === id);
                 if (usuario) {
                     usuario.activo = activo;
+                    // TODO: Reemplazar con fetch a API
                     localStorage.setItem('usuarios', JSON.stringify(this.usuarios));
                     return true;
                 }
@@ -1200,6 +1205,12 @@
             obtenerNuevoId() {
                 return this.usuarios.length > 0 ? Math.max(...this.usuarios.map(u => u.id)) + 1 : 1;
             }
+
+            // Helper para desarrollo
+            resetDemoData() {
+                this.usuarios = this.getUsuariosDemo();
+                localStorage.setItem('usuarios', JSON.stringify(this.usuarios));
+            }
         }
 
         // ==============================================
@@ -1214,60 +1225,38 @@
             }
 
             init() {
-                // VERIFICAR SESIÓN Y ROL
-                const sesion = JSON.parse(localStorage.getItem('sesion'));
-                if (!sesion) {
-                    window.location.href = "login.html";
-                    return;
-                }
-                
-                // Mostrar datos de usuario
-                document.getElementById('user-display-name').textContent = sesion.nombre;
-                document.getElementById('user-display-role').textContent = sesion.rol.toUpperCase();
-
-                // Lógica de solo lectura para supervisor
-                this.esSupervisor = (sesion.rol === 'supervisor');
-                if (this.esSupervisor) {
-                    // Ocultar botones de creación/edición
-                    document.getElementById('btnNuevoUsuario').style.display = 'none';
-                    document.getElementById('btnGuardar').style.display = 'none';
-                    document.getElementById('btnCancelar').style.display = 'none';
-                    // Deshabilitar formulario
-                    const inputs = document.querySelectorAll('#usuarioForm input, #usuarioForm select');
-                    inputs.forEach(input => input.disabled = true);
-                }
-
                 this.cargarEventos();
                 this.cargarUsuarios();
             }
 
             cargarEventos() {
+                // Formulario
                 document.getElementById('usuarioForm').addEventListener('submit', (e) => this.guardarUsuario(e));
-                if (!this.esSupervisor) {
-                    document.getElementById('btnNuevoUsuario').addEventListener('click', () => this.nuevoUsuario());
-                    document.getElementById('btnCancelar').addEventListener('click', () => this.cancelarEdicion());
-                }
+                document.getElementById('btnNuevoUsuario').addEventListener('click', () => this.nuevoUsuario());
+                document.getElementById('btnCancelar').addEventListener('click', () => this.cancelarEdicion());
                 
+                // Búsqueda
                 document.getElementById('buscarUsuario').addEventListener('input', (e) => this.buscarUsuarios(e.target.value));
                 
-                if (!this.esSupervisor) {
-                    document.getElementById('confirmarEstado').addEventListener('click', () => this.confirmarCambioEstado());
-                    document.getElementById('cancelarEstado').addEventListener('click', () => this.cerrarModal());
-                    document.getElementById('closeModalEstado').addEventListener('click', () => this.cerrarModal());
-                    
-                    document.querySelectorAll('.status-radio').forEach(radio => {
-                        radio.addEventListener('change', (e) => this.seleccionarOpcionEstado(e.target.value));
+                // Modal de estado
+                document.getElementById('confirmarEstado').addEventListener('click', () => this.confirmarCambioEstado());
+                document.getElementById('cancelarEstado').addEventListener('click', () => this.cerrarModal());
+                document.getElementById('closeModalEstado').addEventListener('click', () => this.cerrarModal());
+                
+                // Eventos de opciones de estado
+                document.querySelectorAll('.status-radio').forEach(radio => {
+                    radio.addEventListener('change', (e) => this.seleccionarOpcionEstado(e.target.value));
+                });
+                
+                document.querySelectorAll('.status-option').forEach(option => {
+                    option.addEventListener('click', () => {
+                        const radio = option.querySelector('input[type="radio"]');
+                        radio.checked = true;
+                        radio.dispatchEvent(new Event('change'));
                     });
-                    
-                    document.querySelectorAll('.status-option').forEach(option => {
-                        option.addEventListener('click', () => {
-                            const radio = option.querySelector('input[type="radio"]');
-                            radio.checked = true;
-                            radio.dispatchEvent(new Event('change'));
-                        });
-                    });
-                }
-
+                });
+                
+                // Cerrar modal al hacer clic fuera
                 window.addEventListener('click', (e) => {
                     if (e.target.classList.contains('modal')) {
                         this.cerrarModal();
@@ -1293,6 +1282,8 @@
                 
                 usuarios.forEach(usuario => {
                     const fila = document.createElement('tr');
+                    
+                    // Determinar clase del badge según el rol
                     let claseRol = '';
                     let rolTexto = '';
                     switch(usuario.rol) {
@@ -1304,26 +1295,9 @@
                             claseRol = 'role-tecnico'; 
                             rolTexto = 'Técnico';
                             break;
-                        case 'supervisor':
-                            claseRol = 'role-supervisor';
-                            rolTexto = 'Supervisor';
-                            break;
-                        default:
-                            rolTexto = usuario.rol;
+                        
                     }
                     
-                    // Si es supervisor, no mostrar botones de acción
-                    const botonesAccion = this.esSupervisor ? 
-                        `<span style="color: #999; font-size: 0.8rem;">Solo Lectura</span>` :
-                        `<div class="action-buttons">
-                            <button class="btn-icon btn-edit" onclick="usuariosController.editarUsuario(${usuario.id})" title="Editar">
-                                <i class="fas fa-edit"></i>
-                            </button>
-                            <button class="btn-icon btn-toggle" onclick="usuariosController.mostrarModalEstado(${usuario.id})" title="Cambiar Estado">
-                                <i class="fas fa-power-off"></i>
-                            </button>
-                        </div>`;
-
                     fila.innerHTML = `
                         <td>${usuario.nombre}</td>
                         <td><strong>${usuario.username}</strong></td>
@@ -1334,7 +1308,16 @@
                             <i class="fas fa-circle"></i> 
                             ${usuario.activo ? ' Activo' : ' Inactivo'}
                         </td>
-                        <td>${botonesAccion}</td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="btn-icon btn-edit" onclick="usuariosController.editarUsuario(${usuario.id})" title="Editar">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="btn-icon btn-toggle" onclick="usuariosController.mostrarModalEstado(${usuario.id})" title="Cambiar Estado">
+                                    <i class="fas fa-power-off"></i>
+                                </button>
+                            </div>
+                        </td>
                     `;
                     tabla.appendChild(fila);
                 });
@@ -1342,16 +1325,39 @@
 
             async guardarUsuario(e) {
                 e.preventDefault();
-                if (this.esSupervisor) return;
                 
-                if (!this.validarFormulario()) return;
+                // Validaciones
+                if (!this.validarFormulario()) {
+                    return;
+                }
                 
                 try {
                     const usuarioData = this.obtenerDatosFormulario();
+                    
+                    // Mostrar carga
+                    const btnGuardar = document.getElementById('btnGuardar');
+                    const textoOriginal = btnGuardar.innerHTML;
+                    btnGuardar.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Guardando...';
+                    btnGuardar.disabled = true;
+                    
+                    // Guardar en "BD" (localStorage por ahora)
                     await this.service.guardarUsuario(usuarioData);
+                    
+                    // Recargar tabla
                     await this.cargarUsuarios();
+                    
+                    // Limpiar formulario
                     this.limpiarFormulario();
+                    
+                    // Mostrar éxito
                     this.mostrarExito('Usuario guardado exitosamente');
+                    
+                    // Restaurar botón
+                    setTimeout(() => {
+                        btnGuardar.innerHTML = textoOriginal;
+                        btnGuardar.disabled = false;
+                    }, 1000);
+                    
                 } catch (error) {
                     this.mostrarError('Error al guardar usuario: ' + error.message);
                 }
@@ -1361,6 +1367,7 @@
                 const password = document.getElementById('password').value;
                 const confirmPassword = document.getElementById('confirmPassword').value;
                 
+                // Validar contraseñas
                 if (password !== confirmPassword) {
                     this.mostrarError('Las contraseñas no coinciden');
                     return false;
@@ -1371,6 +1378,7 @@
                     return false;
                 }
                 
+                // Validar que al menos tenga una mayúscula y un número
                 if (!/(?=.*[A-Z])(?=.*\d)/.test(password)) {
                     this.mostrarError('La contraseña debe contener al menos una letra mayúscula y un número');
                     return false;
@@ -1381,20 +1389,21 @@
 
             obtenerDatosFormulario() {
                 const id = document.getElementById('usuarioId').value;
+                
                 return {
                     id: id ? parseInt(id) : null,
                     nombre: document.getElementById('nombre').value,
                     email: document.getElementById('email').value,
+                    
                     empresa: document.getElementById('empresa').value,
                     rol: document.getElementById('rol').value,
                     username: document.getElementById('username').value,
-                    activo: document.getElementById('activo').checked,
+                    activo: document.getElementById('activo') ? document.getElementById('activo').checked : true,
                     fechaRegistro: new Date().toISOString().split('T')[0]
                 };
             }
 
             nuevoUsuario() {
-                if(this.esSupervisor) return;
                 this.limpiarFormulario();
                 document.getElementById('formRegistro').scrollIntoView({ behavior: 'smooth' });
             }
@@ -1411,20 +1420,27 @@
             }
 
             async editarUsuario(id) {
-                if(this.esSupervisor) return;
                 try {
                     const usuarios = await this.service.obtenerUsuarios();
                     const usuario = usuarios.find(u => u.id === id);
+                    
                     if (usuario) {
                         this.usuarioEditando = usuario;
+                        
+                        // Llenar formulario
                         document.getElementById('usuarioId').value = usuario.id;
                         document.getElementById('nombre').value = usuario.nombre;
                         document.getElementById('email').value = usuario.email;
+                        
                         document.getElementById('empresa').value = usuario.empresa || '';
                         document.getElementById('rol').value = usuario.rol;
                         document.getElementById('username').value = usuario.username;
-                        document.getElementById('activo').checked = usuario.activo;
+                        
+                        
+                        // Cambiar texto del botón
                         document.getElementById('btnGuardar').innerHTML = '<i class="fas fa-save"></i> Actualizar Usuario';
+                        
+                        // Scroll al formulario
                         document.getElementById('formRegistro').scrollIntoView({ behavior: 'smooth' });
                     }
                 } catch (error) {
@@ -1433,23 +1449,28 @@
             }
 
             async mostrarModalEstado(id) {
-                if(this.esSupervisor) return;
                 try {
                     const usuarios = await this.service.obtenerUsuarios();
                     const usuario = usuarios.find(u => u.id === id);
                     
                     if (usuario) {
                         this.usuarioEditando = usuario;
+                        this.modalAbierto = 'estado';
+                        
+                        // Actualizar información en el modal
                         document.getElementById('nombreUsuarioEstado').textContent = usuario.nombre;
                         document.getElementById('usernameEstado').textContent = usuario.username;
                         document.getElementById('emailEstado').textContent = usuario.email;
                         
-                        const iniciales = usuario.nombre.substring(0,2).toUpperCase();
+                        // Actualizar avatar con iniciales
+                        const iniciales = this.obtenerIniciales(usuario.nombre);
                         document.getElementById('avatarEstado').textContent = iniciales;
                         
+                        // Mostrar estado actual
                         const estadoActual = usuario.activo ? 'Activo' : 'Inactivo';
                         document.getElementById('estadoActual').textContent = estadoActual;
                         
+                        // Marcar la opción actual
                         if (usuario.activo) {
                             document.getElementById('statusActivo').checked = true;
                             document.getElementById('optionActivo').classList.add('active');
@@ -1460,6 +1481,7 @@
                             document.getElementById('optionActivo').classList.remove('active');
                         }
                         
+                        // Mostrar modal
                         document.getElementById('modalEstado').style.display = 'flex';
                     }
                 } catch (error) {
@@ -1471,6 +1493,7 @@
                 document.querySelectorAll('.status-option').forEach(option => {
                     option.classList.remove('active');
                 });
+                
                 if (valor === 'activo') {
                     document.getElementById('optionActivo').classList.add('active');
                 } else {
@@ -1479,19 +1502,39 @@
             }
 
             async confirmarCambioEstado() {
-                if(this.esSupervisor || !this.usuarioEditando) return;
+                if (!this.usuarioEditando) return;
                 
                 try {
                     const nuevoEstado = document.querySelector('input[name="estadoUsuario"]:checked').value === 'activo';
+                    
+                    // Mostrar carga
+                    const btnConfirmar = document.getElementById('confirmarEstado');
+                    const textoOriginal = btnConfirmar.innerHTML;
+                    btnConfirmar.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Actualizando...';
+                    btnConfirmar.disabled = true;
+                    
+                    // Cambiar estado
                     await this.service.cambiarEstadoUsuario(this.usuarioEditando.id, nuevoEstado);
+                    
+                    // Recargar tabla
                     await this.cargarUsuarios();
+                    
+                    // Cerrar modal
                     this.cerrarModal();
                     
+                    // Mostrar mensaje
                     if (nuevoEstado) {
                         this.mostrarExito('Usuario activado exitosamente');
                     } else {
                         this.mostrarExito('Usuario desactivado exitosamente');
                     }
+                    
+                    // Restaurar botón
+                    setTimeout(() => {
+                        btnConfirmar.innerHTML = textoOriginal;
+                        btnConfirmar.disabled = false;
+                    }, 1000);
+                    
                 } catch (error) {
                     this.mostrarError('Error al cambiar estado: ' + error.message);
                 }
@@ -1500,28 +1543,131 @@
             cerrarModal() {
                 document.getElementById('modalEstado').style.display = 'none';
                 this.usuarioEditando = null;
+                this.modalAbierto = null;
+            }
+
+            async buscarUsuarios(termino) {
+                await this.cargarUsuarios(termino);
+            }
+
+            obtenerIniciales(nombre) {
+                return nombre.split(' ')
+                    .map(word => word[0])
+                    .join('')
+                    .toUpperCase()
+                    .substring(0, 2);
             }
 
             mostrarExito(mensaje) {
                 const successMessage = document.getElementById('successMessage');
                 successMessage.innerHTML = `<i class="fas fa-check-circle"></i> ${mensaje}`;
                 successMessage.style.display = 'block';
+                
                 setTimeout(() => {
                     successMessage.style.display = 'none';
                 }, 3000);
             }
 
             mostrarError(mensaje) {
-                alert(mensaje);
+                // Podrías añadir un div específico para errores
+                alert(mensaje); // Por ahora usa alert, luego mejorar
             }
         }
 
+        // ==============================================
+        // INICIALIZACIÓN DE LA APLICACIÓN
+        // ==============================================
         let usuariosController;
 
         document.addEventListener('DOMContentLoaded', function() {
+            // Crear controlador
             usuariosController = new UsuariosController();
+            
+            // Agregar animación de fadeOut para el mensaje
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes fadeOut {
+                    from { opacity: 1; transform: translateY(0); }
+                    to { opacity: 0; transform: translateY(-10px); }
+                }
+            `;
+            document.head.appendChild(style);
+            
+            // Hacer disponible globalmente para los eventos onclick
             window.usuariosController = usuariosController;
+            
+            // Para desarrollo: agregar botón de reset de datos
+            const resetBtn = document.createElement('button');
+            resetBtn.innerHTML = '<i class="fas fa-redo"></i> Reset Datos Demo';
+            resetBtn.className = 'btn btn-secondary';
+            resetBtn.style.position = 'fixed';
+            resetBtn.style.bottom = '20px';
+            resetBtn.style.right = '20px';
+            resetBtn.style.zIndex = '1000';
+            resetBtn.style.display = 'none'; // Oculto por defecto
+            resetBtn.addEventListener('click', () => {
+                if (confirm('¿Restaurar datos de demostración? Se perderán los cambios.')) {
+                    usuariosController.service.resetDemoData();
+                    usuariosController.cargarUsuarios();
+                    usuariosController.mostrarExito('Datos de demostración restaurados');
+                }
+            });
+            document.body.appendChild(resetBtn);
+            
+            // Mostrar botón de reset solo en desarrollo (puedes quitar esto en producción)
+            if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+                resetBtn.style.display = 'block';
+            }
         });
+
+        // ==============================================
+        // FUNCIONES PARA CONEXIÓN FUTURA A BD
+        // ==============================================
+        /*
+        Para conectar con una base de datos, necesitarás:
+        
+        1. Un backend (Node.js, PHP, Python, etc.)
+        2. Una base de datos (MySQL, PostgreSQL, MongoDB, etc.)
+        3. Una API REST
+        
+        Estructura de endpoints sugerida:
+        
+        GET    /api/usuarios            - Obtener todos los usuarios
+        GET    /api/usuarios/:id        - Obtener un usuario específico
+        POST   /api/usuarios            - Crear nuevo usuario
+        PUT    /api/usuarios/:id        - Actualizar usuario
+        PATCH  /api/usuarios/:id/estado - Cambiar estado del usuario
+        
+        En el servicio UsuarioService, reemplazar los métodos con:
+        
+        async obtenerUsuarios() {
+            const response = await fetch('/api/usuarios');
+            return await response.json();
+        }
+        
+        async guardarUsuario(usuario) {
+            const method = usuario.id ? 'PUT' : 'POST';
+            const url = usuario.id ? `/api/usuarios/${usuario.id}` : '/api/usuarios';
+            
+            const response = await fetch(url, {
+                method: method,
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(usuario)
+            });
+            
+            return await response.json();
+        }
+        
+        async cambiarEstadoUsuario(id, activo) {
+            const response = await fetch(`/api/usuarios/${id}/estado`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ activo })
+            });
+            
+            return await response.json();
+        }
+        */
     </script>
 </body>
 </html>

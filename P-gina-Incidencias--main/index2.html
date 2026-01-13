@@ -55,7 +55,7 @@
                     <a href="#" class="menu-link active" id="nav-dashboard">
                         <i class="fas fa-chart-line"></i>
                         <span>Dashboard</span>
-                        
+                        <span class="notification-badge">3</span>
                     </a>
                 </li>
                 <li class="menu-item">
@@ -308,8 +308,8 @@ document.addEventListener('DOMContentLoaded', function() {
     // 1. CORRECCIÓN: BUSCAR 'sesion' EN LUGAR DE 'sesion_activa'
     const sesion = localStorage.getItem('sesion');
     
-    // (Ya está validado arriba en el head, pero se mantiene para lógica interna)
     if (!sesion) {
+        // SI NO HAY SESIÓN, MANDA AL LOGIN
         window.location.href = "login.html"; 
         return;
     }
@@ -321,8 +321,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // 3. LOGICA DEL BOTÓN DE CIERRE DE SESIÓN
     document.getElementById('btn-logout').addEventListener('click', function() {
-        localStorage.removeItem('sesion'); 
-        window.location.href = "login.html";      
+        localStorage.removeItem('sesion'); // Borra la sesión CORRECTA
+        window.location.href = "login.html";      // Regresa al login
     });
 });
 </script>

@@ -23,18 +23,59 @@
                 <div class="subtitle">Panel de Administración</div>
             </div>
         </div>
+      <div class="top-user-info">
+    <div class="user-details">
+        <span id="display-user-name" style="font-weight: bold; color: var(--primary-blue);">Usuario</span>
+        <small id="display-user-role" style="display: block; color: var(--text-light); font-size: 0.75rem; text-align: right;">Rol</small>
+    </div>
+    
+    <button id="btn-logout" style="background: var(--accent-color); color: white; margin-left: 15px; padding: 10px 20px; border-radius: 8px; border: none; cursor: pointer; display: flex; align-items: center; gap: 8px; font-weight: 600; transition: all 0.3s ease; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+        <i class="fas fa-power-off"></i> Salir
+    </button>
+</div>
 
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // PROTECCIÓN DE RUTA: Si no hay sesión, regresa al login
+    const sesion = localStorage.getItem('sesion') || sessionStorage.getItem('sesion');
+    if (!sesion) {
+        window.location.href = "login.html";
+        return;
+    }
+
+    // CARGAR DATOS EN PANTALLA
+    const datosUsuario = JSON.parse(sesion);
+    document.getElementById('display-user-name').textContent = datosUsuario.nombre;
+    document.getElementById('display-user-role').textContent = datosUsuario.rol.toUpperCase();
+
+    // LÓGICA DEL BOTÓN SALIR
+    const btnSalir = document.getElementById('btn-logout');
+    
+    // Efecto visual al pasar el mouse
+    btnSalir.onmouseover = () => btnSalir.style.transform = "scale(1.05)";
+    btnSalir.onmouseout = () => btnSalir.style.transform = "scale(1)";
+
+    btnSalir.addEventListener('click', function() {
+        // Limpiar todo rastro de sesión
+        localStorage.removeItem('sesion');
+        sessionStorage.removeItem('sesion');
+        localStorage.removeItem('usuarioActual');
+        // Redirigir al inicio
+        window.location.href = "login.html";
+    });
+});
+</script>
         <div class="top-user-info">
-            <div class="user-details">
-                <span id="display-user-name" style="font-weight: bold; color: var(--primary-blue);">Cargando...</span>
-                <small id="display-user-role" style="display: block; color: var(--text-light); font-size: 0.75rem; text-align: right;">...</small>
-            </div>
-            
-            <button id="btn-logout" style="background: var(--accent-color); color: white; margin-left: 15px; padding: 10px 20px; border-radius: 8px; border: none; cursor: pointer; display: flex; align-items: center; gap: 8px; font-weight: 600; transition: transform 0.2s;">
-                <i class="fas fa-power-off"></i> Salir
-            </button>
-
-            <div class="top-user-avatar" data-tooltip="Usuario">AD</div>
+    <div class="user-details">
+        <span id="display-user-name" style="font-weight: bold; color: var(--primary-blue);">Usuario</span>
+        <small id="display-user-role" style="display: block; color: var(--text-light); font-size: 0.75rem; text-align: right;">Rol</small>
+    </div>
+    
+    <button id="btn-logout" style="background: var(--accent-color); color: white; margin-left: 15px; padding: 10px 20px; border-radius: 8px; border: none; cursor: pointer; display: flex; align-items: center; gap: 8px; font-weight: 600; transition: transform 0.2s;">
+        <i class="fas fa-power-off"></i> Salir
+    </button>
+</div>
+            <div class="top-user-avatar" data-tooltip="Administrador">AD</div>
         </div>
     </div>
 
@@ -297,5 +338,28 @@
     </div>
 
     <script src="Administrador.js"></script>
+    <script>
+document.addEventListener('DOMContentLoaded', function() {
+    // 1. VERIFICAR SI HAY SESIÓN AL CARGAR
+    const sesion = localStorage.getItem('sesion_activa');
+    
+    if (!sesion) {
+        // SI NO HAY SESIÓN, MANDA AL LOGIN
+        window.location.href = "login.html"; 
+        return;
+    }
+
+    // 2. MOSTRAR DATOS DEL USUARIO EN EL DASHBOARD
+    const datos = JSON.parse(sesion);
+    document.getElementById('display-user-name').textContent = datos.nombre;
+    document.getElementById('display-user-role').textContent = datos.rol.toUpperCase();
+
+    // 3. LOGICA DEL BOTÓN DE CIERRE DE SESIÓN
+    document.getElementById('btn-logout').addEventListener('click', function() {
+        localStorage.removeItem('sesion_activa'); // Borra la sesión
+        window.location.href = "login.html";      // Regresa al login
+    });
+});
+</script>
 </body>       
 </html>
